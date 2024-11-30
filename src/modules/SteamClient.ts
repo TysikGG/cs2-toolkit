@@ -1,4 +1,4 @@
-import { Inventory } from "./Inventory.ts"
+import { Inventory } from "./Inventory"
 
 export class SteamClient {
     requestOptions : { JSON? : boolean, language? : string };
@@ -9,4 +9,8 @@ export class SteamClient {
         const inventory = new Inventory(this, params);
         return await inventory.getData();
     };
+
+    constructor() {
+        this.requestOptions = {};
+    }
 };
