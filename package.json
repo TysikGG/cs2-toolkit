@@ -1,5 +1,41 @@
 {
+  "name": "steam-inventory-ru",
+  "version": "1.2.8",
+  "description": "Библиотека для получения steam-инвентарей",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TysikGG/steam-inventory-ru.git"
+  },
+  "keywords": [
+    "Steam",
+    "inventory",
+    "steam-inventory-api",
+    "steamapi",
+    "steam market",
+    "steam",
+    "steam community",
+    "steam-get-inventory",
+    "nodejs steam",
+    "steam modules",
+    "steam-api",
+    "steam-market-pricing",
+    "steam-inventory",
+    "steam-ru",
+    "steam-russian",
+    "russian"
+  ],
+  "author": "tysik",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/TysikGG/steam-inventory-ru/issues"
+  },
+  "homepage": "https://github.com/TysikGG/steam-inventory-ru#readme",
   "dependencies": {
-    "axios": "^1.7.8"
+    "request": "^2.88.0"
   }
 }
