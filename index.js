@@ -3,17 +3,17 @@ const request = require('request');
 exports.getMarketPrices = async () => {
     return new Promise((resolve, reject) => {
         request('https://market.csgo.com/api/v2/prices/USD.json', function (error, response, body) {
-            if (error) return reject(error)
-            return resolve(JSON.parse(body))
-        })
-    })
-}
+            if (error) return reject(error);
+            return resolve(JSON.parse(body));
+        });
+    });
+};
 
 exports.findPrices = (items) => {
     return new Promise((resolve, reject) => {
         request('https://market.csgo.com/api/v2/prices/USD.json', function (error, response, body) {
-            if (error) return reject(error)
-            const pricesData = JSON.parse(body)
+            if (error) return reject(error);
+            const pricesData = JSON.parse(body);
             for (const info of items.assets) {
                 console.log(info.data.market_hash_name)
                 const marketInfo = pricesData.items.find((item) => item.market_hash_name === info.data.market_hash_name);
