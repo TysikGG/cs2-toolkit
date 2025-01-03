@@ -25,8 +25,12 @@ exports.findPrices = (items) => {
 };
 
 exports.deleteUntradable = (items) => {
-
-}
+    for (const i in items.assets) {
+        console.log(i)
+        if (items.assets[i].data.tradable !== 1) items.assets.splice(i, 1);
+    };
+    return items;
+};
 
 exports.getinventory = async (steamid, {requestPrices, enableTradeble, language}) => {
     const headers = language == "ru" ? { "Accept-Language": "ru,en-US;q=0.9,en;q=0.8,ru-RU;q=0.7,be;q=0.6" } : {};
@@ -45,8 +49,8 @@ exports.getinventory = async (steamid, {requestPrices, enableTradeble, language}
 
                 const itemDescription = body.descriptions.find((data) => data.classid == classid && data.instanceid == instanceid);
                 info.data = itemDescription;
-                console.log(info)
             };
+            if (enableTradeble) body = deleteUntradable(body);
             if (requestPrices) {
                 this.findPrices(body).then((res) => {
                     return resolve(res.assets);;
