@@ -24,6 +24,10 @@ exports.findPrices = (items) => {
     });
 };
 
+exports.deleteUntradable = (items) => {
+
+}
+
 exports.getinventory = async (steamid, {requestPrices, enableTradeble, language}) => {
     const headers = language == "ru" ? { "Accept-Language": "ru,en-US;q=0.9,en;q=0.8,ru-RU;q=0.7,be;q=0.6" } : {};
     return new Promise((resolve, reject) => {
