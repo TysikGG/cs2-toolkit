@@ -15,7 +15,6 @@ exports.findPrices = (items) => {
             if (error) return reject(error);
             const pricesData = JSON.parse(body);
             for (const info of items.assets) {
-                console.log(info.data.market_hash_name)
                 const marketInfo = pricesData.items.find((item) => item.market_hash_name === info.data.market_hash_name);
                 info.price = Number(marketInfo?.price).toFixed(2);
             };
@@ -26,7 +25,6 @@ exports.findPrices = (items) => {
 
 exports.deleteUntradable = (items) => {
     for (const i in items.assets) {
-        console.log(i)
         if (items.assets[i].data.tradable !== 1) items.assets.splice(i, 1);
     };
     return items;
