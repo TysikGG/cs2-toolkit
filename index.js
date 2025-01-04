@@ -50,7 +50,7 @@ exports.getinventory = async (steamid, {requestPrices, enableTradeble, language}
                 const itemDescription = body.descriptions.find((data) => data.classid == classid && data.instanceid == instanceid);
                 info.data = itemDescription;
             };
-            if (enableTradeble) body = deleteUntradable(body);
+            if (enableTradeble) body = this.deleteUntradable(body);
             if (requestPrices) {
                 this.findPrices(body).then((res) => {
                     return resolve(res.assets);;
