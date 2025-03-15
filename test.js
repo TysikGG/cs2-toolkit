@@ -1,6 +1,6 @@
-const { getinventory } = require(".");
+const { getSteamPrice } = require(".");
 
 (async () => {
-    const data = await getinventory("76561199009885328", {tradable: true, requestPrices: true, language: "ru"});
+    const data = await getSteamPrice("Rio 2022 Legends Autograph Capsule");
     console.log(data)
 })()

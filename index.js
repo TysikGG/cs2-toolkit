@@ -1,59 +1,58 @@
-const request = require('request');
+const axios = require('axios');
 
 exports.getMarketPrices = async () => {
-    return new Promise((resolve, reject) => {
-        request('https://market.csgo.com/api/v2/prices/USD.json', function (error, response, body) {
-            if (error) return reject(error);
-            return resolve(JSON.parse(body));
-        });
-    });
+    try {
+        const response = await axios.get('https://market.csgo.com/api/v2/prices/USD.json');
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
 };
 
-exports.findPrices = (items) => {
-    return new Promise((resolve, reject) => {
-        request('https://market.csgo.com/api/v2/prices/USD.json', function (error, response, body) {
-            if (error) return reject(error);
-            const pricesData = JSON.parse(body);
-            for (const info of items.assets) {
-                const marketInfo = pricesData.items.find((item) => item.market_hash_name === info.data.market_hash_name);
-                info.price = Number(marketInfo?.price).toFixed(2);
-            };
-            return resolve(items);
+exports.findPrices = async (items) => {
+    try {
+        const response = await axios.get('https://market.csgo.com/api/v2/prices/USD.json');
+        const pricesData = response.data;
+        items.assets.forEach(info => {
+            const marketInfo = pricesData.items.find(item => item.market_hash_name === info.data.market_hash_name);
+            info.price = Number(marketInfo?.price).toFixed(2);
         });
-    });
+        return items;
+    } catch (error) {
+        throw error;
+    }
 };
 
 exports.deleteUntradable = (items) => {
-    for (const i in items.assets) {
-        if (items.assets[i].data.tradable !== 1) items.assets.splice(i, 1);
-    };
+    items.assets = items.assets.filter(asset => asset.data.tradable === 1);
     return items;
 };
 
-exports.getinventory = async (steamid, {requestPrices, enableTradeble, language}) => {
-    const headers = language == "ru" ? { "Accept-Language": "ru,en-US;q=0.9,en;q=0.8,ru-RU;q=0.7,be;q=0.6" } : {};
-    return new Promise((resolve, reject) => {
-        request({
-            uri: `/inventory/${steamid}/730/2`,
-            baseUrl: 'https://steamcommunity.com/',
-            json: true,
-            headers: headers
-        }, (err, res, body) => {
-            if (err) return reject(err);
-            for (const info of body.assets) {
-                const classid = info.classid;
-                const instanceid = info.instanceid;
-                const assetid = info.assetid;
-
-                const itemDescription = body.descriptions.find((data) => data.classid == classid && data.instanceid == instanceid);
-                info.data = itemDescription;
-            };
-            if (enableTradeble) body = this.deleteUntradable(body);
-            if (requestPrices) {
-                this.findPrices(body).then((res) => {
-                    return resolve(res.assets);;
-                })
-            } else return resolve(body.assets);
+exports.getinventory = async (steamid, { requestPrices, enableTradeble, language }) => {
+    const headers = language === "ru" ? { "Accept-Language": "ru,en-US;q=0.9,en;q=0.8,ru-RU;q=0.7,be;q=0.6" } : {};
+    try {
+        const response = await axios.get(`https://steamcommunity.com/inventory/${steamid}/730/2`, { headers });
+        let body = response.data;
+        body.assets.forEach(info => {
+            const itemDescription = body.descriptions.find(data => data.classid === info.classid && data.instanceid === info.instanceid);
+            info.data = itemDescription;
         });
-    });
+        if (enableTradeble) body = this.deleteUntradable(body);
+        if (requestPrices) {
+            const updatedItems = await this.findPrices(body);
+            return updatedItems.assets;
+        }
+        return body.assets;
+    } catch (error) {
+        throw error;
+    }
+};
+
+exports.getSteamPrice = async (market_hash_name) => {
+    try {
+        const response = await axios.get(`https://steamcommunity.com/market/priceoverview/?appid=730&currency=1&market_hash_name=${market_hash_name}`);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
 };
